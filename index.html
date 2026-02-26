@@ -292,6 +292,19 @@
 
   }
 
+
+
+  /* Scroll-up photo reveal */
+  .hero-content {
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .hero-overlay {
+    transition: opacity 0.8s ease;
+  }
+  .scroll-hint {
+    transition: opacity 0.6s ease;
+  }
+
   /* ── NAV ── */
   nav {
     position: fixed;
@@ -874,7 +887,7 @@
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
-  <div class="hero-content">
+  <div class="hero-content" id="heroContent">
     <p class="hero-eyebrow">Data Scientist · AI/ML Engineer · Data Analyst</p>
     <h1 class="hero-name">Divya<br /><em>Gunjan</em></h1>
     <p class="hero-tagline">Data is more than numbers and dashboards,<br/>I build real solutions that drive real impact.</p>
@@ -883,7 +896,7 @@
       <a href="#contact" class="btn btn-outline">Get In Touch</a>
     </div>
   </div>
-  <div class="scroll-hint">
+  <div class="scroll-hint" id="scrollHint" style="cursor:default;">
     <div class="scroll-line"></div>
     scroll
   </div>
@@ -1323,5 +1336,43 @@
     drawEmail('footer-email-canvas', '#ffffff');
   });
 </script>
+
+
+
+
+<script>
+  // Scroll-up photo reveal
+  var heroContent = document.getElementById('heroContent');
+  var heroOverlay = document.querySelector('.hero-overlay');
+  var scrollHint = document.getElementById('scrollHint');
+
+  function handleHeroScroll() {
+    var scrollY = window.scrollY || window.pageYOffset;
+    var heroHeight = document.querySelector('.hero').offsetHeight;
+
+    // Only apply effect when near the top (within hero)
+    if (scrollY < heroHeight) {
+      // As user scrolls back toward top (scrollY approaching 0), fade content out
+      // Full text visible from scrollY 80-heroHeight, fades out from 80 to 0
+      var fadeThreshold = 80;
+      if (scrollY < fadeThreshold) {
+        var opacity = scrollY / fadeThreshold;
+        heroContent.style.opacity = opacity;
+        scrollHint.style.opacity = opacity * 0.4;
+        // Lighten overlay as content fades
+        var overlayOpacity = 0.2 + (opacity * 0.35);
+        heroOverlay.style.opacity = overlayOpacity;
+      } else {
+        heroContent.style.opacity = 1;
+        scrollHint.style.opacity = '';
+        heroOverlay.style.opacity = 1;
+      }
+    }
+  }
+
+  window.addEventListener('scroll', handleHeroScroll, { passive: true });
+  window.addEventListener('touchmove', handleHeroScroll, { passive: true });
+</script>
+
 </body>
 </html>
